@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, News
+from .models import Category, News, Author
 
 from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
@@ -23,6 +23,7 @@ class FlatPageAdmin(FlatPageAdmin):
 
 admin.site.register(Category)
 admin.site.register(News)
+admin.site.register(Author)
 
 
 

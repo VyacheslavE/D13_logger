@@ -8,24 +8,32 @@
 News
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим все новости -->
+<!-- В контенте на странице мы выводим одну новость -->
 {% block content %}
-<h1>Новость  {{ one_news.id }}</h1>
+<h1>Новость  {{ news.id }}</h1>
     <table>
         <tr>
             <td>
-            <b> {{ one_news.name|cenzor }} </b>
+                <b> {{ news.name|cenzor }} </b>
+
+                <i>{{ news.news_create_time|date:'m-d-Y g:i'  }}</i>
             </td>
         </tr>
         <tr>
             <td>
-                <i>{{ one_news.news_create_time|date:'m-d-Y g:i'  }}</i>
+
+                {{ news.news_text|cenzor }}
             </td>
         </tr>
         <tr>
             <td>
-            {{ one_news.news_text|cenzor }}
+                <p>
+                    <i>{{ news.category.name }}</i>  |
+
+                    <b>{{ news.news_author.author_user.username }}</b>
+                </p>
             </td>
+
         </tr>
     </table>
 {% endblock content %}

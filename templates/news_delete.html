@@ -1,0 +1,39 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+
+{% block title %} News list {% endblock title %}
+
+{% block content %}
+<h2>Вы действительно хотите удалить данную новость?</h2>
+   <table>
+        <tr>
+            <td>
+                <b> {{ news.name|cenzor }} </b>
+
+                <i>{{ news.news_create_time|date:'m-d-Y g:i'  }}</i>
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+                {{ news.news_text|cenzor }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    <i>{{ news.category.name }}</i>  |
+
+                    <b>{{ news.news_author.author_user.username }}</b>
+                </p>
+            </td>
+
+        </tr>
+    </table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+{% endblock content %}
