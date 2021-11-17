@@ -1,0 +1,7 @@
+from django.contrib import admin
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h2> Зарегистрировались! </h2>
+{% endblock %}
