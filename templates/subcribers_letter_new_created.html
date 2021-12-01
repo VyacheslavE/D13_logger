@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+
+<!-- Название у нас будет news -->
+{% block title %}
+{{ new_news.name }}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим одну новость -->
+{% block content %}
+<h1>Здравствуй,  {{ new_news.categoty.subscibers.user.name }}. Новая статья в твоём любимом разделе!»</h1>
+    <p><b><a href="{{news.get_absolute_url}}">{{ new_news.name }}</a></b></p>
+    <p><a href="{{url}}">{{ new_news.news_text|cenzor|truncatechars:50 }}</a></p>
+
+{% endblock content %}

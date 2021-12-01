@@ -16,6 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-#laixpb-mk7ih#-i@4yazvu1k_pu(7$3#oo)%y97f#034&e#xj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,8 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'newsapp',
+    'newsapp.apps.NewsappConfig',
     'django_filters',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # ... include the providers you want to enable:
+    'allauth.socialaccount.providers.google',
+    'django_apscheduler',
+
 ]
 
 MIDDLEWARE = [
@@ -67,12 +76,22 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'Test_D2.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
 # Database
@@ -126,11 +145,39 @@ APP_DIRS = True
 
 STATIC_URL = '/static/'
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/news/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DEFAULT_FROM_EMAIL = 'VyachTest2021@rambler.ru'
+
+EMAIL_HOST = 'smtp.rambler.ru'  # адрес сервера meta.ua-почты
+EMAIL_PORT = 465 # порт smtp сервера
+EMAIL_HOST_USER =  'VyachTest2021' # вашеpip имя пользователя, например если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = '*111Zz111*' # пароль от почты
+EMAIL_USE_SSL = True
+
+# формат даты, которую будет воспрнимать наш задачник(вспоминаем урок по фильтрам)
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
+
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = True
+
+ACCOUNT_FORMS = {'signup': 'newsapp.models.BaseRegisterForm'}
+

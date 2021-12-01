@@ -15,10 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.views import LoginView, LogoutView
+from newsapp.views import BaseRegisterView, IndexView, upgrade_me, subscribe_me, NewsWeek
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('news/', include('newsapp.urls')),
+    path('', include('newsapp.urls')),
+    path('accounts/signup/',
+         BaseRegisterView.as_view(template_name='account/signup.html'), name='signup'),
+    path('login/',
+         LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/',
+         LogoutView.as_view(template_name='account/logout.html'), name='logout'),
+    path('accounts/', include('allauth.urls')),
+    path('', IndexView.as_view()),
+    path('subscribed/<int:news_category_id>', subscribe_me, name='subscribed'),
+    path('index/sign/upgrade/', upgrade_me, name='upgrade'),
+path('Week_news_to_subscribers/', NewsWeek.as_view(), name='Week_news_to_subscribers'),
+
     # делаем так, чтобы все адреса из нашего приложения (simpleapp/urls.py) сами автоматически подключались когда мы их добавим.
 ]
