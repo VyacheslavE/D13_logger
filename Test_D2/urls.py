@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
-from newsapp.views import BaseRegisterView, IndexView, upgrade_me, subscribe_me, NewsWeek
+from newsapp.views import BaseRegisterView, IndexView, upgrade_me, subscribe_me
 
 
 urlpatterns = [
@@ -34,7 +34,6 @@ urlpatterns = [
     path('', IndexView.as_view()),
     path('subscribed/<int:news_category_id>', subscribe_me, name='subscribed'),
     path('index/sign/upgrade/', upgrade_me, name='upgrade'),
-path('Week_news_to_subscribers/', NewsWeek.as_view(), name='Week_news_to_subscribers'),
 
     # делаем так, чтобы все адреса из нашего приложения (simpleapp/urls.py) сами автоматически подключались когда мы их добавим.
 ]

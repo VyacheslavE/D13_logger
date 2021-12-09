@@ -5,10 +5,10 @@ Category
 {% endblock title %}
 
 {% block content %}
-<h1>Категории постов</h1>
+<h1>Категории новостей</h1>
 
     {% for cat in categories %}
-        <a href="{% url 'category_detail' cat.id %}">{{ cat.category }}</a>
+        <a href="{% url 'category_detail' cat.id %}">{{ cat.name }}</a>
         <hr>
     {% endfor %}
 

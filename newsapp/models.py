@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django import forms
+from django.core.cache import cache
 from django.core.validators import MinValueValidator
 from allauth.account.forms import SignupForm
 from datetime import datetime
@@ -75,6 +76,10 @@ class News(models.Model):
 
     def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу новости
         return f'/news/{self.id}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'news-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
 
 class NewsCategory(models.Model):

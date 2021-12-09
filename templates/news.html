@@ -2,7 +2,6 @@
 {% extends 'flatpages/default.html' %}
 
 {% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
-
 <!-- Название у нас будет news -->
 {% block title %}
 News
@@ -12,7 +11,6 @@ News
 {% block content %}
     <h1>Новостей на странице: {{ all_news|length }}</h1>
     {% if all_news %}
-
         <table>
         <thead>
             <th>
@@ -45,7 +43,7 @@ News
                {{ news.news_text|cenzor|truncatechars:50 }}
             </td>
              <td>
-               {{ news.category.name }}
+               <a href="{% url 'category_detail' news.category.id %}">{{ news.category.name }}</a>
             </td>
             <td>
               {{ news.news_author.author_user.username }}

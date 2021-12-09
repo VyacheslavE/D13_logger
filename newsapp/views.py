@@ -7,7 +7,7 @@ from django.core.mail import send_mail, mail_managers
 from django.http import HttpResponse
 from django.views import View
 from .tasks import hello
-
+from django.core.cache import cache
 
 from django.core.paginator import Paginator  # импортируем класс, позволяющий удобно осуществлять постраничный вывод
  #DetailView # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
@@ -98,6 +98,23 @@ class NewsDetailView(DetailView):
     template_name = 'news_detail.html'
     queryset = News.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        obj_cat = kwargs['object'].category
+        context['pop'] = obj_cat.all().last().subscribers.all()
+        return context
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'news-{self.kwargs["pk"]}',
+                        None)  # кэш очень похож на словарь, и метод get действует также. Он забирает значение по ключу,
+        # если его нет, то забирает None.
+        #  если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(*args, **kwargs)
+            cache.set(f'news-{self.kwargs["pk"]}', obj)
+
+        return obj
+
 
 # дженерик для создания объекта. Надо указать только имя шаблона и класс формы, который мы написали в прошлом юните. Остальное он сделает за вас
 class NewsCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
@@ -167,6 +184,25 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return context
 
 
+class CategoryList(ListView):
+    model = Category
+    template_name = 'categories.html'
+    context_object_name = 'categories'
+
+
+class CategoryDetail(LoginRequiredMixin, DetailView):
+    model = Category
+    template_name = 'category_detail.html'
+    queryset = Category.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        us = Category.objects.get(id=kwargs['object'].id)
+        context['if_not_subscriber'] = us.subscribers.filter(id=self.request.user.id).last()
+        context['re'] = us.subscribers.all()
+        return context
+
+
 @login_required
 def upgrade_me(request):
     user = request.user
@@ -180,7 +216,12 @@ def upgrade_me(request):
 def subscribe_me(request, news_category_id):
     user = request.user
     my_category = Category.objects.get(id=news_category_id)
-    my_category.subscribers.add(user)
-    return redirect(f'/subscribed/{news_category_id}')
+    sub_user = User.objects.get(id=user.pk)
+    if my_category.subscribers.filter(id=user.pk):
+        my_category.subscribers.remove(sub_user)
+        return redirect(f'/subscribed/{news_category_id}')
+    else:
+        my_category.subscribers.add(sub_user)
+        return redirect(f'/subscribed/{news_category_id}')
 
 
