@@ -8,7 +8,6 @@ from django.core.mail import EmailMultiAlternatives
 
 @shared_task
 def send_mail(mail, new_news, my_cat, url):
-    print(f'{mail} - mail, {new_news} - news, {url} ')
     html_content = render_to_string('subcribers_letter_new_created.html',
                                     {
                                         'new_news': new_news,

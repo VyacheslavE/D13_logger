@@ -197,9 +197,9 @@ class CategoryDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        us = Category.objects.get(id=kwargs['object'].id)
-        context['if_not_subscriber'] = us.subscribers.filter(id=self.request.user.id).last()
-        context['re'] = us.subscribers.all()
+        cat_id = Category.objects.get(id=kwargs['object'].id)
+        context['if_not_subscriber'] = cat_id.subscribers.filter(id=self.request.user.id).last()
+        context['re'] = cat_id.subscribers.all()
         return context
 
 

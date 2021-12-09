@@ -6,7 +6,7 @@ from .views import NewsList, Mysearch, NewsDetailView, NewsCreateView, NewsUpdat
 
 urlpatterns = [
     # path — означает путь. В данном случае путь ко всем новостям у нас останется пустым, позже станет ясно, почему
-    path('', cache_page(60)(NewsList.as_view())),
+    path('', NewsList.as_view()),
 path('search/', Mysearch.as_view()), # news/search/
 path('<int:pk>/', cache_page(10)(NewsDetailView.as_view()), name='news_detail'),  # Ссылка на просмотр одной новости
 path('create/', NewsCreateView.as_view(), name='news_create'),  # Ссылка на создание новости
